@@ -12,7 +12,6 @@
     clippy::option_unwrap_used,
     clippy::result_unwrap_used
 )]
-
 // Uncomment before ship to reconcile use of possibly redundant crates, debug remnants, missing license files and more
 //#![warn(clippy::cargo, clippy::restriction, missing_docs, warnings)]
 //#![deny(warnings)]
