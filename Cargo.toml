@@ -4,14 +4,15 @@ categories = []
 edition = "2018"
 keywords = []
 license = "MIT OR Apache-2.0"
-name = "blockchain"
+name = "block_chain"
 readme = "README.md"
-repository = "https://github.com/u007d/blockchain"
+repository = "https://github.com/u007d/block_chain"
 version = "0.1.0"
 
 [dependencies]
 derive_more = "*"
 structopt = "*"
+hashbrown = "0.3.0"
 
 [dev-dependencies]
 pretty_assertions = "*"
