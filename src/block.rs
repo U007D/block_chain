@@ -1,37 +1,34 @@
-use std::{
-    fmt::Debug,
-    hash::{Hash, Hasher},
-    mem::size_of,
-    slice::from_raw_parts,
-};
-
-// core::hash::Hasher::finish() -> u64
-pub type HashType = u64;
+use crate::Hasher;
+use std::{fmt::Debug, mem::size_of, slice::from_raw_parts};
 
 #[cfg(test)]
 mod unit_tests;
 
 #[derive(Debug, Hash, PartialEq)]
-pub struct Block<T>
+pub struct Block<D, H>
 where
-    T: Debug + Hash + PartialEq,
+    D: Debug + PartialEq,
+    H: Hasher,
 {
-    data: T,
-    prev_hash: HashType,
-    hash: HashType,
+    data: D,
+    prev_hash: H::Output,
+    hash: H::Output,
 }
 
-impl<T> Block<T>
+impl<D, H> Block<D, H>
 where
-    T: Debug + Hash + PartialEq,
+    D: Debug + PartialEq,
+    H: Hasher,
 {
-    pub fn new(data: T, prev_hash: HashType, mut hasher: impl Hasher) -> Self {
-        hasher.write(to_byte_slice(&data));
-        hasher.write_u64(prev_hash);
+    pub fn new(data: D, prev_hash: H::Output, mut hasher: H) -> Self {
         Self {
+            hash: hasher
+//                .reset()
+                .hash(to_byte_slice(&data))
+                .hash(to_byte_slice(&prev_hash))
+                .result(),
             data,
             prev_hash,
-            hash: hasher.finish(),
         }
     }
 }
