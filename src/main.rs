@@ -17,6 +17,7 @@
 //#![deny(warnings)]
 
 mod args;
+mod as_bytes_iter;
 mod block;
 mod consts;
 mod error;

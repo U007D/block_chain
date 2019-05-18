@@ -1,13 +1,16 @@
 use super::*;
-use crate::{worlds_worst_hasher::WorldsWorstHasher, Hasher};
+use crate::{as_bytes_iter::AsBytesIter, worlds_worst_hasher::WorldsWorstHasher, Hasher};
+use std::slice::Iter;
 
 #[derive(Clone, Debug, PartialEq)]
 struct MyData {
     data: String,
 }
 
-impl AsBytesIter for MyData {
-    fn as_bytes_iter(&self) -> impl Iterator<Item = u8> {
+impl<'a> AsBytesIter<'a> for MyData {
+    type Output = Iter<'a, u8>;
+
+    fn as_bytes_iter(&self) -> Self::Output {
         self.data.as_bytes().iter()
     }
 }
@@ -16,7 +19,7 @@ impl AsBytesIter for MyData {
 fn new_block_hashed_with_worlds_worst_hasher() {
     // given an arbitrary data type, an `impl Hasher` and a constructor
     let payload = String::from("test data");
-    let data = MyData { data: payload }.serialize_u8();
+    let data = MyData { data: payload }.as_bytes_iter();
     let hasher = WorldsWorstHasher::new();
 
     let prev_hash = hasher.clone().hash(String::new().as_bytes()).result();
@@ -27,11 +30,11 @@ fn new_block_hashed_with_worlds_worst_hasher() {
     let result = sut(data.clone(), prev_hash.clone(), hasher);
 
     // then the result should be as expected
-    assert_eq!(
+    let expected_block = assert_eq!(
         Block {
-            hash: to_byte_slice(&data)
+            hash: as_bytes(&data)
                 .iter()
-                .chain(to_byte_slice(&prev_hash).iter())
+                .chain(as_bytes(&prev_hash).iter())
                 .chain(&['*' as u8])
                 .map(|&v| v)
                 .collect(),
