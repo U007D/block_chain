@@ -1,17 +1,23 @@
 use super::*;
-use crate::{Hasher, TrivialHasher};
+use crate::{worlds_worst_hasher::WorldsWorstHasher, Hasher};
 
 #[derive(Clone, Debug, PartialEq)]
 struct MyData {
     data: String,
 }
 
+impl AsBytesIter for MyData {
+    fn as_bytes_iter(&self) -> impl Iterator<Item = u8> {
+        self.data.as_bytes().iter()
+    }
+}
+
 #[test]
-fn new_block_hashed_with_trivial_hasher_algorithm() {
+fn new_block_hashed_with_worlds_worst_hasher() {
     // given an arbitrary data type, an `impl Hasher` and a constructor
-    let payload = String::from("abcdefghijklmnopqrstuvwxyz");
-    let data = MyData { data: payload };
-    let hasher = TrivialHasher::new();
+    let payload = String::from("test data");
+    let data = MyData { data: payload }.serialize_u8();
+    let hasher = WorldsWorstHasher::new();
 
     let prev_hash = hasher.clone().hash(String::new().as_bytes()).result();
 

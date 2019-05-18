@@ -1,10 +1,11 @@
-use crate::{Hasher, TrivialHasher};
+use super::*;
+use crate::Hasher;
 
 #[test]
-fn hash_hashes_single_input() {
+fn hash_hashes_an_input() {
     // given input data and a hasher
     let data = String::from("hello");
-    let mut sut = TrivialHasher::new();
+    let mut sut = WorldsWorstHasher::new();
 
     // when invoked
     let result = sut.hash(data.clone());
@@ -16,9 +17,9 @@ fn hash_hashes_single_input() {
 #[test]
 fn hash_hashes_two_inputs() {
     // given input data and a hasher
-    let data = String::from("hello");
+    let data = String::from("hpub use worlds_worst_hasher::WorldsWorstHasher;ello");
     let data2 = String::from("world");
-    let mut sut = TrivialHasher::new();
+    let mut sut = WorldsWorstHasher::new();
 
     // when invoked
     let result = sut.hash(data.clone()).hash(data2.clone());
@@ -32,7 +33,7 @@ fn reset_clears_existing_hash_value() {
     // given input data and a hasher
     let data = String::from("hello");
     let data2 = String::from("world");
-    let mut sut = TrivialHasher::new();
+    let mut sut = WorldsWorstHasher::new();
 
     // when invoked
     let result = sut.hash(data.clone()).reset().hash(data2.clone());
@@ -45,7 +46,7 @@ fn reset_clears_existing_hash_value() {
 fn result_returns_hash_value() {
     // given input data and a hasher
     let data = String::from("hello");
-    let mut hasher = TrivialHasher::new();
+    let mut hasher = WorldsWorstHasher::new();
 
     // when invoked
     let result = hasher.hash(data.clone()).result();

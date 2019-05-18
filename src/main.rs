@@ -21,13 +21,14 @@ mod block;
 mod consts;
 mod error;
 mod hasher;
-mod trivial_hasher;
+#[cfg(test)]
+mod worlds_worst_hasher;
 
 pub use block::Block;
 pub use hasher::Hasher;
 use std::result::Result as StdResult;
 use structopt::StructOpt;
-pub use trivial_hasher::TrivialHasher;
+
 pub use {args::Args, consts::*, error::Error};
 
 pub type Result<T> = StdResult<T, Error>;
