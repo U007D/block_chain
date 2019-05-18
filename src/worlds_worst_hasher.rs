@@ -1,6 +1,6 @@
 use crate::Hasher;
 
-#[derive(Clone, Debug, PartialEq)]
+#[derive(Clone, Debug)]
 pub struct WorldsWorstHasher {
     data: Vec<u8>,
 }
