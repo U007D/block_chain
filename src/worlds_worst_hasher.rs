@@ -1,9 +1,6 @@
 use crate::Hasher;
-use std::borrow::Borrow;
-use std::fmt::Debug;
-use std::vec::IntoIter;
 
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, PartialEq)]
 pub struct WorldsWorstHasher {
     data: Vec<u8>,
 }
@@ -15,15 +12,11 @@ impl WorldsWorstHasher {
 }
 
 impl Hasher for WorldsWorstHasher {
-    type Output = IntoIter<u8>;
+    type Output = Vec<u8>;
 
-    fn hash<D>(&mut self, data: D) -> &mut Self
-    where
-        D: IntoIterator + Debug + PartialEq,
-        D::Item: Borrow<u8> + PartialEq,
-    {
+    fn hash<D: AsRef<[u8]>>(&mut self, data: D) -> &mut Self {
         self.data.pop();
-        self.data.extend(data);
+        self.data.extend(data.as_ref());
         self.data.push('*' as u8);
         self
     }
@@ -34,6 +27,6 @@ impl Hasher for WorldsWorstHasher {
     }
 
     fn result(&self) -> Self::Output {
-        self.data.into_iter()
+        self.data.clone()
     }
 }

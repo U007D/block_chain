@@ -1,17 +1,14 @@
 use super::*;
 use crate::{as_bytes_iter::AsBytesIter, worlds_worst_hasher::WorldsWorstHasher, Hasher};
-use std::slice::Iter;
 
 #[derive(Clone, Debug, PartialEq)]
 struct MyData {
     data: String,
 }
 
-impl<'a> AsBytesIter<'a> for MyData {
-    type Output = Iter<'a, u8>;
-
-    fn as_bytes_iter(&self) -> Self::Output {
-        self.data.as_bytes().iter()
+impl AsBytesIter for MyData {
+    fn as_bytes(&self) -> &[u8] {
+        self.data.as_bytes()
     }
 }
 
@@ -19,7 +16,7 @@ impl<'a> AsBytesIter<'a> for MyData {
 fn new_block_hashed_with_worlds_worst_hasher() {
     // given an arbitrary data type, an `impl Hasher` and a constructor
     let payload = String::from("test data");
-    let data = MyData { data: payload }.as_bytes_iter();
+    let data = MyData { data: payload };
     let hasher = WorldsWorstHasher::new();
 
     let prev_hash = hasher.clone().hash(String::new().as_bytes()).result();
@@ -30,9 +27,10 @@ fn new_block_hashed_with_worlds_worst_hasher() {
     let result = sut(data.clone(), prev_hash.clone(), hasher);
 
     // then the result should be as expected
-    let expected_block = assert_eq!(
+    assert_eq!(
         Block {
-            hash: as_bytes(&data)
+            hash: data
+                .as_bytes()
                 .iter()
                 .chain(as_bytes(&prev_hash).iter())
                 .chain(&['*' as u8])

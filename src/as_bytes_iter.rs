@@ -1,5 +1,3 @@
-pub trait AsBytesIter<'a> {
-    type Output: IntoIterator<Item = &'a u8>;
-
-    fn as_bytes_iter(&self) -> Self::Output;
+pub trait AsBytesIter {
+    fn as_bytes(&self) -> &[u8];
 }
